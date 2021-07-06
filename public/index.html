@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css">
+    <title>Tic Tac Toe</title>
+</head>
+
+<body>
+    <div class="join-container">
+        <header class="join-header">
+            <h1><i class="far fa-circle"></i> Tic Tac Toe <i class="fas fa-times"></i></h1>
+        </header>
+        <main class="join-main">
+            <form action="game.html">
+                <div class="form-control">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Enter username..." required />
+                </div>
+                <div class="form-control">
+                    <label for="room">Room</label>
+                    <select name="room" id="room">
+                        <option value="Charizard">Charizard</option>
+                        <option value="Express">Express</option>
+                        <option value="React">React</option>
+                        <option value="Node">Node</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="Google">Google</option>
+                    </select>
+                </div>
+                <div id="error"></div>
+                <button type="submit" class="btn">Start Game</button>
+            </form>
+        </main>
+    </div>
+
+    <script src="js/front.js"></script>
+</body>
+
+</html>
