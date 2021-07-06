@@ -80,6 +80,16 @@ function getOpponentName(id, room) {
     return opponent.username
 }
 
+// Get user by shape/mark
+function getUserByMark(room, myshape) {
+    let bothUsers = users.filter(user => user.room === room)
+    if (bothUsers[0].mark === myshape) {
+        return bothUsers[0]
+    } else {
+        return bothUsers[1]
+    }
+}
+
 module.exports = {
     userJoin,
     getCurrentUser,
@@ -90,5 +100,6 @@ module.exports = {
     toggleMark,
     isIdExists,
     toggleTurns,
-    getOpponentName
+    getOpponentName,
+    getUserByMark
 }

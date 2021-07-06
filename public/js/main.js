@@ -13,6 +13,8 @@ const cell6 = document.getElementById('cell6')
 const cell7 = document.getElementById('cell7')
 const cell8 = document.getElementById('cell8')
 const cell9 = document.getElementById('cell9')
+const restartBox = document.querySelector('.restart-box')
+const restartBtn = document.getElementById('restart')
 const WINNING_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -26,6 +28,7 @@ const WINNING_COMBINATIONS = [
 
 
 // Game variables
+let myID
 let markedCells = []
 let myShape = ''
 let myTurn
@@ -58,22 +61,50 @@ socket.on('cellMarkResponse', ({ cellid, myShape }) => {
         markedCells.push(cellid)
         // check win
         if (checkWin(myShape)) {
-            console.log('winner ' + myShape)
             // win request
+            if (myTurn) {
+                socket.emit('winRequest', myShape)
+            }
         } else {
             // check draw
             if (isDraw()) {
-                console.log('game draw')
                 // draw request
+                if (myTurn) {
+                    socket.emit('drawRequest', 'GAME DRAW')
+                }
             }
         }
     }
 })
 
+// Win Response
+socket.on('winResponse', (winUsername) => {
+    isGameEnded = true
+    console.log(winUsername)
+    restartBox.style.display = "flex"
+})
+
+// Draw Response
+socket.on('drawResponse', (msg) => {
+    isGameEnded = true
+    console.log(msg)
+    restartBox.style.display = "flex"
+})
+
+// Game Restart Response
+socket.on('restartResponse', (updatedUsers) => {
+    // Set game variables
+    // Clear board and cell classes
+    // Set hover state
+    isGameEnded = false
+    restartBox.style.display = "none"
+})
+
 // Initiate game variables
-socket.on('startgame', ({ mark, turn }) => {
+socket.on('startgame', ({ mark, turn, id }) => {
     myShape = mark
     myTurn = turn
+    myID = id
     hoverState(myTurn)
 })
 
@@ -105,6 +136,12 @@ chatForm.addEventListener('submit', (e) => {
     // Clear input
     e.target.elements.msg.value = ''
     e.target.elements.msg.focus()
+})
+
+// Game restart request
+restartBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    socket.emit('restartRequest', 'restart')
 })
 
 // Output message to DOM

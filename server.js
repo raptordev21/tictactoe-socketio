@@ -13,7 +13,8 @@ const {
     toggleMark,
     isIdExists,
     toggleTurns,
-    getOpponentName
+    getOpponentName,
+    getUserByMark
 } = require('./utils/users')
 
 const app = express()
@@ -39,8 +40,8 @@ io.on('connection', socket => {
 
                 // Welcome current user
                 // Only to user who just got connected
-                socket.emit('message', formatMessage(botName, `Welcome to Tic Tac Toe game ${user.username}`))
-                socket.emit('startgame', { mark: user.mark, turn: user.userTurn })
+                socket.emit('message', formatMessage(botName, `Welcome to Tic Tac Toe Game ${user.username}`))
+                socket.emit('startgame', { mark: user.mark, turn: user.userTurn, id: user.id })
 
                 // if (user.userTurn) {
                 //     io.to(user.room).emit('message', formatMessage(botName, `${user.username} turn now`))
@@ -70,8 +71,8 @@ io.on('connection', socket => {
 
                 // Welcome current user
                 // Only to user who just got connected
-                socket.emit('message', formatMessage(botName, `Welcome to Tic Tac Toe game ${user.username}`))
-                socket.emit('startgame', { mark: user.mark, turn: user.userTurn })
+                socket.emit('message', formatMessage(botName, `Welcome to Tic Tac Toe Game ${user.username}`))
+                socket.emit('startgame', { mark: user.mark, turn: user.userTurn, id: user.id })
 
                 // Broadcast when a user connects
                 // Broadcast to all except user who just got connected
@@ -135,6 +136,67 @@ io.on('connection', socket => {
         }
     })
 
+    // Listen for win request
+    socket.on('winRequest', (myShape) => {
+        // Check if socket id exists in memory
+        if (isIdExists(socket.id)) {
+            const user = getCurrentUser(socket.id)
+            // check if 2 people in room
+            if (getRoomSize(user.room) == 2) {
+                // Send win response
+                let winUser = getUserByMark(user.room, myShape)
+                io.to(user.room).emit('winResponse', winUser.username)
+                // Send win message
+                io.to(winUser.room).emit('message', formatMessage(botName, `${winUser.username} WON`))
+            } else {
+                io.to(user.room).emit('message', formatMessage(botName, `${user.room} room have only 1 player, please wait until other player joins`))
+            }
+        } else {
+            console.log('third user')
+        }
+    })
+
+    // Listen for draw request
+    socket.on('drawRequest', (msg) => {
+        // Check if socket id exists in memory
+        if (isIdExists(socket.id)) {
+            const user = getCurrentUser(socket.id)
+            // check if 2 people in room
+            if (getRoomSize(user.room) == 2) {
+                // Send draw response
+                io.to(user.room).emit('drawResponse', msg)
+                // Send draw message
+                io.to(user.room).emit('message', formatMessage(botName, msg))
+            } else {
+                io.to(user.room).emit('message', formatMessage(botName, `${user.room} room have only 1 player, please wait until other player joins`))
+            }
+        } else {
+            console.log('third user')
+        }
+    })
+
+    // Listen for restart request
+    socket.on('restartRequest', (msg) => {
+        // Check if socket id exists in memory
+        if (isIdExists(socket.id)) {
+            const user = getCurrentUser(socket.id)
+            // check if 2 people in room
+            if (getRoomSize(user.room) == 2) {
+                // toggle shape/mark
+                // toggle turn
+                // send restart response
+                io.to(user.room).emit('restartResponse', updatedUsers)
+                // send restart message
+                socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} wants to play again`))
+                console.log(msg)
+            } else {
+                io.to(user.room).emit('message', formatMessage(botName, `${user.room} room have only 1 player, please wait until other player joins`))
+            }
+        } else {
+            console.log('third user')
+        }
+    })
+
     // Runs when client disconnects
     socket.on('disconnect', () => {
         if (isIdExists(socket.id)) {
@@ -145,6 +207,7 @@ io.on('connection', socket => {
             }
 
             // send game ended response
+            io.to(user.room).emit('drawResponse', 'user left')
 
             // Send users and room info
             io.to(user.room).emit('roomUsers', {
