@@ -64,13 +64,22 @@ function isIdExists(id) {
     }
 }
 
-// toggle both turns
+// toggle both turns in memory
 function toggleTurns(room) {
     let bothUsers = users.filter(user => user.room === room)
     let index1 = users.findIndex((obj => obj.id == bothUsers[0].id))
     let index2 = users.findIndex((obj => obj.id == bothUsers[1].id))
     users[index1].userTurn = !users[index1].userTurn
     users[index2].userTurn = !users[index2].userTurn
+}
+
+// toggle mark in memory
+function toggleMarkMemory(room) {
+    let bothUsers = users.filter(user => user.room === room)
+    let index1 = users.findIndex((obj => obj.id == bothUsers[0].id))
+    let index2 = users.findIndex((obj => obj.id == bothUsers[1].id))
+    users[index1].mark = toggleMark(users[index1].mark)
+    users[index2].mark = toggleMark(users[index2].mark)
 }
 
 // Get opponent name
@@ -101,5 +110,6 @@ module.exports = {
     isIdExists,
     toggleTurns,
     getOpponentName,
-    getUserByMark
+    getUserByMark,
+    toggleMarkMemory
 }

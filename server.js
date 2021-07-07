@@ -14,7 +14,8 @@ const {
     isIdExists,
     toggleTurns,
     getOpponentName,
-    getUserByMark
+    getUserByMark,
+    toggleMarkMemory
 } = require('./utils/users')
 
 const app = express()
@@ -183,8 +184,11 @@ io.on('connection', socket => {
             // check if 2 people in room
             if (getRoomSize(user.room) == 2) {
                 // toggle shape/mark
+                toggleMarkMemory(user.room)
                 // toggle turn
+                toggleTurns(user.room)
                 // send restart response
+                let updatedUsers = getRoomUsers(user.room)
                 io.to(user.room).emit('restartResponse', updatedUsers)
                 // send restart message
                 socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} wants to play again`))

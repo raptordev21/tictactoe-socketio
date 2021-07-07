@@ -94,9 +94,27 @@ socket.on('drawResponse', (msg) => {
 // Game Restart Response
 socket.on('restartResponse', (updatedUsers) => {
     // Set game variables
-    // Clear board and cell classes
-    // Set hover state
+    markedCells = []
     isGameEnded = false
+    let usernow = updatedUsers.find(user => user.id === myID)
+    myShape = usernow.mark
+    myTurn = usernow.userTurn
+    // Clear board and cell classes
+    board.classList.remove('x')
+    board.classList.remove('circle')
+    cell1.classList.remove('not-allowed')
+    cell2.classList.remove('not-allowed')
+    cell3.classList.remove('not-allowed')
+    cell4.classList.remove('not-allowed')
+    cell5.classList.remove('not-allowed')
+    cell6.classList.remove('not-allowed')
+    cell7.classList.remove('not-allowed')
+    cell8.classList.remove('not-allowed')
+    cell9.classList.remove('not-allowed')
+    removeCellMark()
+    // Set hover state
+    hoverState(myTurn)
+    // hide restart button
     restartBox.style.display = "none"
 })
 
@@ -238,6 +256,18 @@ function isDraw() {
     // } else {
     //     return false
     // }
+}
+
+function removeCellMark() {
+    cell1.classList.remove('x') || cell1.classList.remove('circle')
+    cell2.classList.remove('x') || cell2.classList.remove('circle')
+    cell3.classList.remove('x') || cell3.classList.remove('circle')
+    cell4.classList.remove('x') || cell4.classList.remove('circle')
+    cell5.classList.remove('x') || cell5.classList.remove('circle')
+    cell6.classList.remove('x') || cell6.classList.remove('circle')
+    cell7.classList.remove('x') || cell7.classList.remove('circle')
+    cell8.classList.remove('x') || cell8.classList.remove('circle')
+    cell9.classList.remove('x') || cell9.classList.remove('circle')
 }
 
 // Third User ---------------------------------------------------------------------------
