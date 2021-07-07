@@ -92,6 +92,10 @@ io.on('connection', socket => {
                     users: getRoomUsers(user.room)
                 })
 
+                // send restart response
+                let updatedUsers = getRoomUsers(user.room)
+                io.to(user.room).emit('restartResponse', updatedUsers)
+
             }
         } else {
             // Room size is 2 or greater
@@ -186,7 +190,7 @@ io.on('connection', socket => {
                 // toggle shape/mark
                 toggleMarkMemory(user.room)
                 // toggle turn
-                toggleTurns(user.room)
+                // toggleTurns(user.room)
                 // send restart response
                 let updatedUsers = getRoomUsers(user.room)
                 io.to(user.room).emit('restartResponse', updatedUsers)
@@ -211,7 +215,7 @@ io.on('connection', socket => {
             }
 
             // send game ended response
-            io.to(user.room).emit('drawResponse', 'user left')
+            io.to(user.room).emit('disconnectResponse', 'user left')
 
             // Send users and room info
             io.to(user.room).emit('roomUsers', {

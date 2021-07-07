@@ -91,6 +91,29 @@ socket.on('drawResponse', (msg) => {
     restartBox.style.display = "flex"
 })
 
+// Disconnect Response
+socket.on('disconnectResponse', (msg) => {
+    isGameEnded = true
+    markedCells = []
+    console.log(msg)
+    // Clear board and cell classes
+    board.classList.remove('x')
+    board.classList.remove('circle')
+    cell1.classList.remove('not-allowed')
+    cell2.classList.remove('not-allowed')
+    cell3.classList.remove('not-allowed')
+    cell4.classList.remove('not-allowed')
+    cell5.classList.remove('not-allowed')
+    cell6.classList.remove('not-allowed')
+    cell7.classList.remove('not-allowed')
+    cell8.classList.remove('not-allowed')
+    cell9.classList.remove('not-allowed')
+    removeCellMark()
+    // Set hover state
+    hoverState(myTurn)
+    restartBox.style.display = "flex"
+})
+
 // Game Restart Response
 socket.on('restartResponse', (updatedUsers) => {
     // Set game variables
